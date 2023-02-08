@@ -1,0 +1,50 @@
+local function searchForResources(turtle, resourceName)
+  for i = 1, 16 do
+    turtle.select(i)
+    if turtle.getItemCount(i) > 0 then
+      if turtle.getItemDetail(i).name == resourceName then
+        return true
+      end
+    end
+  end
+  return false
+end
+
+local function digAndMove(turtle)
+  while turtle.detect() do
+    turtle.dig()
+  end
+  turtle.forward()
+end
+
+local function returnToStart(turtle)
+  turtle.turnLeft()
+  turtle.turnLeft()
+  while turtle.forward() do end
+  turtle.turnRight()
+  turtle.turnRight()
+end
+
+local function search(turtle)
+  while true do
+    if turtle.detectDown() then
+      if searchForResources(turtle, "minecraft:diamond_ore") or searchForResources(turtle, "minecraft:coal") then
+        turtle.digDown()
+        turtle.select(1)
+        turtle.placeDown()
+        returnToStart(turtle)
+        break
+      end
+    end
+    digAndMove(turtle)
+  end
+end
+
+local function main()
+  local turtle = turtle or require("turtle")
+  while true do
+    search(turtle)
+  end
+end
+
+main()
